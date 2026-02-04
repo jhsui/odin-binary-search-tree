@@ -61,7 +61,7 @@ class Tree {
     if (typeof value !== "number" || Number.isNaN(value))
       throw TypeError("Parameter must be a nubmer!!!");
 
-    if (this.includes(value)) return;
+    // if (this.includes(value)) return;
 
     function insertNode(node, val, parentNode = null) {
       if (node === null) {
@@ -76,6 +76,8 @@ class Tree {
         insertNode(node.left, val, node);
       } else if (val > node.value) {
         insertNode(node.right, val, node);
+      } else {
+        return;
       }
     }
 
