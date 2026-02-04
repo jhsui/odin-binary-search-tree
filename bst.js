@@ -110,6 +110,7 @@ class Tree {
       }
     }
 
+    // get the smallest childNode
     function findSmallestChild(node) {
       if (node.left === null) {
         return node;
@@ -151,21 +152,32 @@ class Tree {
       }
     } else {
       // both sides has child
-      if (value === this.root.value) {
-        findSmallestChild(this.root.right).left = this.root.left;
-        this.root = this.root.right;
-        return;
+      const replacingNode = findSmallestChild(deletingNodeObj.node.right);
+      const replacingNodeObj = getNodeAndParentNode(
+        replacingNode.value,
+        this.root,
+      );
+
+      replacingNode.left = deletingNodeObj.node.left;
+      if (deletingNodeObj.node.right.value !== replacingNode.value) {
+        if (replacingNode.right === null) {
+          replacingNode.right = deletingNodeObj.node.right;
+        } else {
+          replacingNodeObj.parentNode.left = replacingNode.right;
+        }
       }
 
-      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
-        findSmallestChild(deletingNodeObj.node.right).left =
-          deletingNodeObj.node.left;
-        deletingNodeObj.parentNode.left = deletingNodeObj.node.right;
-      } else {
-        findSmallestChild(deletingNodeObj.node.right).left =
-          deletingNodeObj.node.left;
-        deletingNodeObj.parentNode.right = deletingNodeObj.node.right;
+      // connect new node to deletingNode's parentNode
+      if (deletingNodeObj.parentNode !== null) {
+        if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+          deletingNodeObj.parentNode.left = replacingNode;
+        } else {
+          deletingNodeObj.parentNode.right = replacingNode;
+        }
       }
+
+      // deleting the replacingNode from its original position
+      replacingNodeObj.parentNode.left = null;
     }
 
     if (!this.isBalanced()) {
