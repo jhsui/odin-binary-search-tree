@@ -95,22 +95,85 @@ class Tree {
     function getNodeAndParentNode(val, node, parentNode = null) {
       if (val === node.value) {
         return { node, parentNode };
-      } else if (val < node.val) {
+      } else if (val < node.value) {
         return getNodeAndParentNode(val, node.left, node);
       } else {
         return getNodeAndParentNode(val, node.right, node);
       }
     }
 
-    const deletingNodeObj = getNodeAndParentNode(value, this.root);
+    function leftOrRight(node, parentNode) {
+      if (node === parentNode.left) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
+    function findSmallestChild(node) {
+      if (node.left === null) {
+        return node;
+      } else {
+        return findSmallestChild(node.left);
+      }
+    }
+
+    const deletingNodeObj = getNodeAndParentNode(value, this.root);
     if (
+      // this node has no children
       deletingNodeObj.node.left === null &&
       deletingNodeObj.node.right === null
     ) {
+      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+        deletingNodeObj.parentNode.left = null;
+      } else {
+        deletingNodeObj.parentNode.right = null;
+      }
+    } else if (
+      // only has left child
+      deletingNodeObj.node.left !== null &&
+      deletingNodeObj.node.right === null
+    ) {
+      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+        deletingNodeObj.parentNode.left = deletingNodeObj.node.left;
+      } else {
+        deletingNodeObj.parentNode.right = deletingNodeObj.node.left;
+      }
+    } else if (
+      // only has right child
+      deletingNodeObj.node.left === null &&
+      deletingNodeObj.node.right !== null
+    ) {
+      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+        deletingNodeObj.parentNode.left = deletingNodeObj.node.right;
+      } else {
+        deletingNodeObj.parentNode.right = deletingNodeObj.node.right;
+      }
+    } else {
+      // both sides has child
+      if (value === this.root.value) {
+        findSmallestChild(this.root.right).left = this.root.left;
+        this.root = this.root.right;
+        return;
+      }
+
+      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+        findSmallestChild(deletingNodeObj.node.right).left =
+          deletingNodeObj.node.left;
+        deletingNodeObj.parentNode.left = deletingNodeObj.node.right;
+      } else {
+        findSmallestChild(deletingNodeObj.node.right).left =
+          deletingNodeObj.node.left;
+        deletingNodeObj.parentNode.right = deletingNodeObj.node.right;
+      }
+    }
+
+    if (!this.isBalanced()) {
+      this.rebalance();
     }
   }
 
+  //incorrect, only check level 0
   isBalanced() {
     if (this.root === null) return true;
 

@@ -15,7 +15,7 @@ const tree = new Tree([1, 2]);
 // console.log(tree);
 // prettyPrint(tree.root);
 // console.log(tree.includes(1));
-prettyPrint(tree.root);
+// prettyPrint(tree.root);
 
 tree.insert(3);
 tree.insert(4);
@@ -33,9 +33,21 @@ tree.insert(-5);
 tree.insert(-6);
 tree.insert(-7);
 
-console.log(tree.isBalanced());
+// console.log(tree.isBalanced());
 
 // tree.insert(3);
 
+prettyPrint(tree.root);
+console.log(tree.isBalanced());
+
+tree.deleteItem(-4);
+prettyPrint(tree.root);
+console.log(tree.isBalanced());
+
+tree.deleteItem(-2);
+prettyPrint(tree.root);
+console.log(tree.isBalanced());
+
+tree.deleteItem(2);
 prettyPrint(tree.root);
 console.log(tree.isBalanced());
