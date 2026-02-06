@@ -233,6 +233,37 @@ class Tree {
 
     this.root = this.#buildTree(getArr(this.root));
   }
+
+  levelOrderForEach(callback) {
+    if (callback === undefined || typeof callback !== "function") {
+      throw Error("Parameter must be a function!!!");
+    }
+
+    const arr = [];
+    arr.push(this.root);
+
+    function dealWithOneNode(callback) {
+      const curr = arr[0];
+      if (curr === undefined) {
+        return;
+      }
+
+      callback(curr.value);
+
+      if (curr.left !== null) {
+        arr.push(curr.left);
+      }
+      if (curr.right !== null) {
+        arr.push(curr.right);
+      }
+
+      arr.shift(curr.value);
+
+      dealWithOneNode(callback);
+    }
+
+    dealWithOneNode(callback);
+  }
 }
 
 export { Tree };

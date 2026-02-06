@@ -43,14 +43,17 @@ tree.insert(-7);
 // tree.deleteItem(-4);
 // console.log(tree.isBalanced());
 prettyPrint(tree.root);
-tree.deleteItem(-6);
-prettyPrint(tree.root);
-console.log(tree.isBalanced());
+// tree.deleteItem(-6);
+// prettyPrint(tree.root);
+// console.log(tree.isBalanced());
 
-tree.deleteItem(-4);
-prettyPrint(tree.root);
-console.log(tree.isBalanced());
+// tree.deleteItem(-4);
+// prettyPrint(tree.root);
+// console.log(tree.isBalanced());
 
 // tree.deleteItem(2);
 // prettyPrint(tree.root);
 // console.log(tree.isBalanced());
+
+tree.levelOrderForEach((e) => console.log(e + 100));
+prettyPrint(tree.root);
