@@ -63,14 +63,19 @@ class Tree {
 
     // if (this.includes(value)) return;
 
+    // cannot insert when array is empty.
     function insertNode(node, val, parentNode = null) {
       if (node === null) {
         node = new Node(val);
-        if (val < parentNode.value) {
-          parentNode.left = node;
-        } else {
-          parentNode.right = node;
+
+        if (parentNode !== null) {
+          if (val < parentNode.value) {
+            parentNode.left = node;
+          } else {
+            parentNode.right = node;
+          }
         }
+
         return;
       } else if (val < node.value) {
         insertNode(node.left, val, node);
@@ -191,26 +196,54 @@ class Tree {
   isBalanced() {
     if (this.root === null) return true;
 
-    function childNodeCount(node) {
+    function getCounts(node) {
       let leftCount = 0;
       let rightCount = 0;
 
       if (node.left !== null) {
-        const subCounts = childNodeCount(node.left);
+        const subCounts = getCounts(node.left);
         leftCount = 1 + subCounts.leftCount + subCounts.rightCount;
       }
 
       if (node.right !== null) {
-        const subCounts = childNodeCount(node.right);
+        const subCounts = getCounts(node.right);
         rightCount = 1 + subCounts.leftCount + subCounts.rightCount;
       }
 
       return { leftCount, rightCount };
     }
 
-    const counts = childNodeCount(this.root);
-    const diffCounts = Math.abs(counts.leftCount - counts.rightCount);
-    return diffCounts <= 1;
+    function checkOneNode(node) {
+      const counts = getCounts(node);
+      const diffCounts = Math.abs(counts.leftCount - counts.rightCount);
+      return diffCounts <= 1;
+    }
+
+    function traverseSubTree(node) {
+      if (node === null) {
+        return true;
+      }
+
+      if (!checkOneNode(node)) {
+        return false;
+      }
+
+      if (node.left !== null) {
+        if (!traverseSubTree(node.left)) {
+          return false;
+        }
+      }
+
+      if (node.right !== null) {
+        if (!traverseSubTree(node.right)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return traverseSubTree(this.root);
   }
 
   rebalance() {
@@ -263,6 +296,102 @@ class Tree {
     }
 
     dealWithOneNode(callback);
+  }
+
+  preOrderForEach(callback) {
+    if (callback === undefined || typeof callback !== "function") {
+      throw Error("Parameter must be a function!!!");
+    }
+
+    function dealWithOneNode(node, callback) {
+      if (node === null) {
+        return;
+      } else {
+        callback(node.value);
+
+        if (node.left !== null) {
+          dealWithOneNode(node.left, callback);
+        }
+        if (node.right !== null) {
+          dealWithOneNode(node.right, callback);
+        }
+      }
+    }
+
+    dealWithOneNode(this.root, callback);
+  }
+
+  inOrderForEach(callback) {
+    if (callback === undefined || typeof callback !== "function") {
+      throw Error("Parameter must be a function!!!");
+    }
+
+    function dealWithOneNode(node, callback) {
+      if (node === null) {
+        return;
+      } else {
+        if (node.left !== null) {
+          dealWithOneNode(node.left, callback);
+        }
+
+        callback(node.value);
+
+        if (node.right !== null) {
+          dealWithOneNode(node.right, callback);
+        }
+      }
+    }
+
+    dealWithOneNode(this.root, callback);
+  }
+
+  postOrderForEach(callback) {
+    if (callback === undefined || typeof callback !== "function") {
+      throw Error("Parameter must be a function!!!");
+    }
+
+    function dealWithOneNode(node, callback) {
+      if (node === null) {
+        return;
+      } else {
+        if (node.left !== null) {
+          dealWithOneNode(node.left, callback);
+        }
+
+        if (node.right !== null) {
+          dealWithOneNode(node.right, callback);
+        }
+
+        callback(node.value);
+      }
+    }
+
+    dealWithOneNode(this.root, callback);
+  }
+
+  height(value) {}
+
+  depth(value) {
+    if (typeof value !== "number" || Number.isNaN(value))
+      throw TypeError("Parameter must be a nubmer!!!");
+
+    function findNode(node, val) {
+      let height = 0;
+
+      if (val === node.value) {
+        return height;
+      } else if (node.left === null && node.right === null) {
+        return undefined;
+      } else if (node.left !== null && val < node.value) {
+        height = height + 1 + findNode(node.left, val);
+      } else if (node.right !== null && val > node.value) {
+        height = height + 1 + findNode(node.right, val);
+      }
+
+      return height;
+    }
+
+    return findNode(this.root, value);
   }
 }
 
