@@ -10,14 +10,14 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
-const tree = new Tree([1]);
+const tree = new Tree([]);
 
 // console.log(tree);
 // prettyPrint(tree.root);
 // console.log(tree.includes(1));
 // prettyPrint(tree.root);
 
-// tree.insert(3);
+tree.insert(0);
 // tree.insert(4);
 // tree.insert(5);
 // tree.insert(6);
@@ -39,11 +39,11 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// for (let i = 0; i < 100; i++) {
-//   let r = randomInt(-1000, 1000);
+for (let i = 0; i < 100; i++) {
+  let r = randomInt(-1000, 1000);
 
-//   tree.insert(r);
-// }
+  tree.insert(r);
+}
 
 console.log(tree.isBalanced());
 
@@ -70,10 +70,10 @@ console.log(tree.isBalanced());
 // tree.postOrderForEach((e) => console.log(e + 100));
 // tree.levelOrderForEach((e) => console.log(e + 100));
 // console.log(tree.height(-1));
-tree.insert(0);
+// tree.insert(0);
 prettyPrint(tree.root);
 console.log(tree.isBalanced());
-console.log(tree.includes(0));
+// console.log(tree.includes(0));
 // console.log(tree.includes(0));
 
 // prettyPrint(tree.root);

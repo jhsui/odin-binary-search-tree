@@ -68,14 +68,11 @@ class Tree {
       if (node === null) {
         node = new Node(val);
 
-        if (parentNode !== null) {
-          if (val < parentNode.value) {
-            parentNode.left = node;
-          } else {
-            parentNode.right = node;
-          }
+        if (val < parentNode.value) {
+          parentNode.left = node;
+        } else {
+          parentNode.right = node;
         }
-
         return;
       } else if (val < node.value) {
         insertNode(node.left, val, node);
@@ -86,11 +83,15 @@ class Tree {
       }
     }
 
-    insertNode(this.root, value);
-
-    if (!this.isBalanced()) {
-      this.rebalance();
+    if (this.root !== null) {
+      insertNode(this.root, value);
+    } else {
+      this.root = new Node(value);
     }
+
+    // if (!this.isBalanced()) {
+    //   this.rebalance();
+    // }
   }
 
   deleteItem(value) {
