@@ -16,9 +16,10 @@ class Tree {
     if (array.length === 0) return null;
     const sortedArr = [];
 
-    array.filter((e) => {
-      if (typeof e !== "number" || Number.isNaN(e))
+    array.forEach((e) => {
+      if (typeof e !== "number" || Number.isNaN(e)) {
         throw TypeError("Array elements must be numbers!!!");
+      }
 
       if (!sortedArr.includes(e)) {
         sortedArr.push(e);
@@ -37,12 +38,11 @@ class Tree {
   }
 
   includes(value) {
-    if (typeof value !== "number" || Number.isNaN(value))
+    if (typeof value !== "number" || Number.isNaN(value)) {
       throw TypeError("Parameter must be a nubmer!!!");
+    }
 
     function find(node, val) {
-      // do i need the following line?
-      //   if (!(node instanceof Node)) throw TypeError;
       if (node === null) return false;
 
       if (node.value === val) {
@@ -58,36 +58,25 @@ class Tree {
   }
 
   insert(value) {
-    if (typeof value !== "number" || Number.isNaN(value))
+    if (typeof value !== "number" || Number.isNaN(value)) {
       throw TypeError("Parameter must be a nubmer!!!");
+    }
 
-    // if (this.includes(value)) return;
-
-    // cannot insert when array is empty.
-    function insertNode(node, val, parentNode = null) {
+    function insertNode(node, val) {
       if (node === null) {
-        node = new Node(val);
-
-        if (val < parentNode.value) {
-          parentNode.left = node;
-        } else {
-          parentNode.right = node;
-        }
-        return;
-      } else if (val < node.value) {
-        insertNode(node.left, val, node);
-      } else if (val > node.value) {
-        insertNode(node.right, val, node);
-      } else {
-        return;
+        return new Node(val);
       }
+
+      if (val < node.value) {
+        node.left = insertNode(node.left, val);
+      } else if (val > node.value) {
+        node.right = insertNode(node.right, val);
+      }
+
+      return node;
     }
 
-    if (this.root !== null) {
-      insertNode(this.root, value);
-    } else {
-      this.root = new Node(value);
-    }
+    this.root = insertNode(this.root, value);
 
     if (!this.isBalanced()) {
       this.rebalance();
@@ -95,8 +84,9 @@ class Tree {
   }
 
   deleteItem(value) {
-    if (typeof value !== "number" || Number.isNaN(value))
+    if (typeof value !== "number" || Number.isNaN(value)) {
       throw TypeError("Parameter must be a nubmer!!!");
+    }
 
     if (!this.includes(value)) return;
 
@@ -128,6 +118,44 @@ class Tree {
     }
 
     const deletingNodeObj = getNodeAndParentNode(value, this.root);
+
+    // if the deleting node is root
+    if (deletingNodeObj.parentNode === null) {
+      if (
+        deletingNodeObj.node.left === null &&
+        deletingNodeObj.node.right === null
+      ) {
+        this.root = null;
+      } else if (
+        deletingNodeObj.node.left !== null &&
+        deletingNodeObj.node.right === null
+      ) {
+        this.root = this.root.left;
+      } else if (
+        deletingNodeObj.node.left === null &&
+        deletingNodeObj.node.right !== null
+      ) {
+        this.root = this.root.right;
+      } else {
+        const replacingNode = findSmallestChild(deletingNodeObj.node.right);
+        const replacingNodeObj = getNodeAndParentNode(
+          replacingNode.value,
+          this.root,
+        );
+
+        replacingNode.left = deletingNodeObj.node.left;
+
+        if (deletingNodeObj.node.right !== replacingNode) {
+          // no matter if replacingNode.right is null
+          replacingNodeObj.parentNode.left = replacingNode.right;
+          replacingNode.right = deletingNodeObj.node.right;
+        }
+
+        this.root = replacingNode;
+      }
+      return;
+    }
+
     if (
       // this node has no children
       deletingNodeObj.node.left === null &&
@@ -167,33 +195,27 @@ class Tree {
       );
 
       replacingNode.left = deletingNodeObj.node.left;
-      if (deletingNodeObj.node.right.value !== replacingNode.value) {
-        if (replacingNode.right === null) {
-          replacingNode.right = deletingNodeObj.node.right;
-        } else {
-          replacingNodeObj.parentNode.left = replacingNode.right;
-        }
+
+      if (deletingNodeObj.node.right !== replacingNode) {
+        // no matter if replacingNode.right is null
+        replacingNodeObj.parentNode.left = replacingNode.right;
+        replacingNode.right = deletingNodeObj.node.right;
       }
 
       // connect new node to deletingNode's parentNode
-      if (deletingNodeObj.parentNode !== null) {
-        if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
-          deletingNodeObj.parentNode.left = replacingNode;
-        } else {
-          deletingNodeObj.parentNode.right = replacingNode;
-        }
+      if (!leftOrRight(deletingNodeObj.node, deletingNodeObj.parentNode)) {
+        deletingNodeObj.parentNode.left = replacingNode;
+      } else {
+        deletingNodeObj.parentNode.right = replacingNode;
       }
-
-      // deleting the replacingNode from its original position
-      replacingNodeObj.parentNode.left = null;
     }
 
-    if (!this.isBalanced()) {
-      this.rebalance();
-    }
+    // if (!this.isBalanced()) {
+    //   this.rebalance();
+    // }
   }
 
-  //incorrect, only check level 0
+  //incorrect,
   isBalanced() {
     if (this.root === null) return true;
 

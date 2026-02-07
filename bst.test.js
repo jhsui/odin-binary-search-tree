@@ -1,4 +1,4 @@
-import { Tree } from "./bst.js";
+import { Tree } from "./bst-polished.js";
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null || node === undefined) {
@@ -10,31 +10,29 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
-const tree = new Tree([]);
+const tree = new Tree([0]);
 
 // console.log(tree);
 // prettyPrint(tree.root);
 // console.log(tree.includes(1));
 // prettyPrint(tree.root);
 
-// tree.insert(0);
-// tree.insert(4);
-// tree.insert(5);
-// tree.insert(6);
-// tree.insert(7);
-// tree.insert(8);
-// tree.insert(9);
-// tree.insert(10);
-// tree.insert(-1);
-// tree.insert(-2);
-// tree.insert(-3);
-// tree.insert(-4);
-// tree.insert(-5);
-// tree.insert(-6);
-// tree.insert(-7);
-// tree.insert(11);
-
-// prettyPrint(tree.root);
+tree.insert(0);
+tree.insert(4);
+tree.insert(5);
+tree.insert(6);
+tree.insert(7);
+tree.insert(8);
+tree.insert(9);
+tree.insert(10);
+tree.insert(-1);
+tree.insert(-2);
+tree.insert(-3);
+tree.insert(-4);
+tree.insert(-5);
+tree.insert(-6);
+tree.insert(-7);
+tree.insert(11);
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -78,4 +76,10 @@ function randomInt(min, max) {
 // console.log(tree.includes(0));
 
 // prettyPrint(tree.root);
-console.log(tree.height(0));
+// tree.insert(0);
+prettyPrint(tree.root);
+tree.deleteItem(10);
+console.log();
+console.log();
+console.log();
+prettyPrint(tree.root);
