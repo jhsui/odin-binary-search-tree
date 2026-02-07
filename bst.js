@@ -43,7 +43,7 @@ class Tree {
     function find(node, val) {
       // do i need the following line?
       //   if (!(node instanceof Node)) throw TypeError;
-      if (node === null || node.value === null) return false;
+      if (node === null) return false;
 
       if (node.value === val) {
         return true;
@@ -89,9 +89,9 @@ class Tree {
       this.root = new Node(value);
     }
 
-    // if (!this.isBalanced()) {
-    //   this.rebalance();
-    // }
+    if (!this.isBalanced()) {
+      this.rebalance();
+    }
   }
 
   deleteItem(value) {
@@ -370,7 +370,70 @@ class Tree {
     dealWithOneNode(this.root, callback);
   }
 
-  height(value) {}
+  height(value) {
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      throw TypeError("Parameter must be a nubmer!!!");
+    }
+
+    // find the node
+    function find(node, val) {
+      if (node === null) return false;
+
+      if (node.value === val) {
+        return node;
+      } else if (val < node.value) {
+        return find(node.left, val);
+      } else {
+        return find(node.right, val);
+      }
+    }
+    const nodeOfValue = find(this.root, value);
+
+    // get all the leaf nodes
+    function checkLeaf(node) {
+      // check if a node is a leaf
+      if (node.left === null && node.right === null) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    const leafArr = [];
+    function getLeafNodeArr(node) {
+      if (checkLeaf(node)) {
+        leafArr.push(node);
+      } else {
+        if (node.left !== null) {
+          getLeafNodeArr(node.left);
+        }
+
+        if (node.right !== null) {
+          getLeafNodeArr(node.right);
+        }
+      }
+    }
+    getLeafNodeArr(nodeOfValue);
+
+    // then calculate all the height
+    function getHeight(startNode, leafNode) {
+      let h = 0;
+      if (leafNode.value === startNode.value) {
+        return h;
+      } else if (leafNode.value < startNode.value) {
+        return (h = h + 1 + getHeight(startNode.left, leafNode));
+      } else if (leafNode.value > startNode.value) {
+        return (h = h + 1 + getHeight(startNode.right, leafNode));
+      }
+    }
+
+    const heightArr = leafArr.map((leafNode) =>
+      getHeight(nodeOfValue, leafNode),
+    );
+
+    // return the max
+    return Math.max(...heightArr);
+  }
 
   depth(value) {
     if (typeof value !== "number" || Number.isNaN(value))
