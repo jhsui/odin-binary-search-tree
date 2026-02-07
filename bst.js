@@ -392,6 +392,8 @@ class Tree {
     // get all the leaf nodes
     function checkLeaf(node) {
       // check if a node is a leaf
+      if (node === undefined) return true;
+
       if (node.left === null && node.right === null) {
         return true;
       } else {
@@ -418,6 +420,10 @@ class Tree {
     // then calculate all the height
     function getHeight(startNode, leafNode) {
       let h = 0;
+      if (leafNode === undefined) {
+        return h;
+      }
+
       if (leafNode.value === startNode.value) {
         return h;
       } else if (leafNode.value < startNode.value) {
