@@ -464,6 +464,10 @@ class Tree {
   }
 
   depth(value) {
+    if (this.root === null && value === null) {
+      return 0;
+    }
+
     if (typeof value !== "number" || Number.isNaN(value))
       throw TypeError("Parameter must be a nubmer!!!");
 
