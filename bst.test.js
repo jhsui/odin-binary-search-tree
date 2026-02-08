@@ -10,7 +10,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
-const tree = new Tree([]);
+const tree = new Tree([0]);
 
 // tree.insert(0);
 // tree.insert(4);
@@ -29,10 +29,9 @@ const tree = new Tree([]);
 // tree.insert(-7);
 // tree.insert(11);
 
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
+// function randomInt(min, max) {
+//   return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
 // for (let i = 0; i < 10; i++) {
 //   let r = randomInt(-1000, 1000);
 
@@ -40,8 +39,7 @@ function randomInt(min, max) {
 // }
 
 prettyPrint(tree.root);
-
-console.log(tree.depth(null));
 console.log();
+console.log(tree.height(1));
 console.log();
 prettyPrint(tree.root);

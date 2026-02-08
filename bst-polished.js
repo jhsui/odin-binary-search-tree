@@ -393,29 +393,39 @@ class Tree {
   }
 
   height(value) {
+    if (this.root === null) {
+      return undefined;
+    }
+
     if (typeof value !== "number" || Number.isNaN(value)) {
       throw TypeError("Parameter must be a nubmer!!!");
     }
 
     // find the node
     function find(node, val) {
-      if (node === null) return false;
+      if (node === null) {
+        return null;
+      }
 
       if (node.value === val) {
         return node;
       } else if (val < node.value) {
         return find(node.left, val);
-      } else {
+      } else if (val > node.value) {
         return find(node.right, val);
       }
+
+      return null;
     }
+
     const nodeOfValue = find(this.root, value);
+    if (nodeOfValue === null) {
+      return undefined;
+    }
 
     // get all the leaf nodes
     function checkLeaf(node) {
       // check if a node is a leaf
-      if (node === undefined) return true;
-
       if (node.left === null && node.right === null) {
         return true;
       } else {
@@ -442,9 +452,6 @@ class Tree {
     // then calculate all the height
     function getHeight(startNode, leafNode) {
       let h = 0;
-      if (leafNode === undefined) {
-        return h;
-      }
 
       if (leafNode.value === startNode.value) {
         return h;
@@ -468,8 +475,9 @@ class Tree {
       return 0;
     }
 
-    if (typeof value !== "number" || Number.isNaN(value))
+    if (typeof value !== "number" || Number.isNaN(value)) {
       throw TypeError("Parameter must be a nubmer!!!");
+    }
 
     function findNode(node, val) {
       let height = 0;
