@@ -218,7 +218,7 @@ class Tree {
   isBalanced() {
     const getNodeHeight = (node) => this.height(node.value);
 
-    function checkChildrenHeight(node) {
+    const checkChildrenHeight = (node) => {
       if (node === null) {
         return true;
       }
@@ -239,7 +239,7 @@ class Tree {
       }
 
       return checkChildrenHeight(node.left) && checkChildrenHeight(node.right);
-    }
+    };
 
     return checkChildrenHeight(this.root);
   }
@@ -288,7 +288,7 @@ class Tree {
         arr.push(curr.right);
       }
 
-      arr.shift(curr.value);
+      arr.shift();
 
       dealWithOneNode(callback);
     }
@@ -417,7 +417,7 @@ class Tree {
   }
 
   depth(value) {
-    if (this.root === null && value === null) {
+    if (this.root === null) {
       return 0;
     }
 
