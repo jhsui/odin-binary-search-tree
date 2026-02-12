@@ -78,9 +78,9 @@ class Tree {
 
     this.root = insertNode(this.root, value);
 
-    if (!this.isBalanced()) {
-      this.rebalance();
-    }
+    // if (!this.isBalanced()) {
+    //   this.rebalance();
+    // }
   }
 
   deleteItem(value) {
@@ -215,58 +215,33 @@ class Tree {
     // }
   }
 
-  //incorrect,
   isBalanced() {
-    if (this.root === null) return true;
+    const getNodeHeight = (node) => this.height(node.value);
 
-    function getCounts(node) {
-      let leftCount = 0;
-      let rightCount = 0;
-
-      if (node.left !== null) {
-        const subCounts = getCounts(node.left);
-        leftCount = 1 + subCounts.leftCount + subCounts.rightCount;
-      }
-
-      if (node.right !== null) {
-        const subCounts = getCounts(node.right);
-        rightCount = 1 + subCounts.leftCount + subCounts.rightCount;
-      }
-
-      return { leftCount, rightCount };
-    }
-
-    function checkOneNode(node) {
-      const counts = getCounts(node);
-      const diffCounts = Math.abs(counts.leftCount - counts.rightCount);
-      return diffCounts <= 1;
-    }
-
-    function traverseSubTree(node) {
+    function checkChildrenHeight(node) {
       if (node === null) {
         return true;
       }
 
-      if (!checkOneNode(node)) {
-        return false;
-      }
+      let leftHeight = 0;
+      let rightHeight = 0;
 
       if (node.left !== null) {
-        if (!traverseSubTree(node.left)) {
-          return false;
-        }
+        leftHeight = getNodeHeight(node.left);
       }
 
       if (node.right !== null) {
-        if (!traverseSubTree(node.right)) {
-          return false;
-        }
+        rightHeight = getNodeHeight(node.right);
       }
 
-      return true;
+      if (Math.abs(leftHeight - rightHeight) > 1) {
+        return false;
+      }
+
+      return checkChildrenHeight(node.left) && checkChildrenHeight(node.right);
     }
 
-    return traverseSubTree(this.root);
+    return checkChildrenHeight(this.root);
   }
 
   rebalance() {
@@ -401,7 +376,6 @@ class Tree {
       throw TypeError("Parameter must be a nubmer!!!");
     }
 
-    // find the node
     function find(node, val) {
       if (node === null) {
         return null;
@@ -423,51 +397,23 @@ class Tree {
       return undefined;
     }
 
-    // get all the leaf nodes
-    function checkLeaf(node) {
-      // check if a node is a leaf
-      if (node.left === null && node.right === null) {
-        return true;
-      } else {
-        return false;
+    function getHeight(node, val) {
+      if (node === null) {
+        return -1;
       }
-    }
 
-    const leafArr = [];
-    function getLeafNodeArr(node) {
-      if (checkLeaf(node)) {
-        leafArr.push(node);
-      } else {
-        if (node.left !== null) {
-          getLeafNodeArr(node.left);
-        }
-
-        if (node.right !== null) {
-          getLeafNodeArr(node.right);
-        }
-      }
-    }
-    getLeafNodeArr(nodeOfValue);
-
-    // then calculate all the height
-    function getHeight(startNode, leafNode) {
       let h = 0;
-
-      if (leafNode.value === startNode.value) {
+      if (node.left === null && node.right === null && node.value === val) {
         return h;
-      } else if (leafNode.value < startNode.value) {
-        return (h = h + 1 + getHeight(startNode.left, leafNode));
-      } else if (leafNode.value > startNode.value) {
-        return (h = h + 1 + getHeight(startNode.right, leafNode));
+      } else {
+        return (h =
+          h +
+          1 +
+          Math.max(getHeight(node.left, val), getHeight(node.right, val)));
       }
     }
 
-    const heightArr = leafArr.map((leafNode) =>
-      getHeight(nodeOfValue, leafNode),
-    );
-
-    // return the max
-    return Math.max(...heightArr);
+    return getHeight(nodeOfValue, value);
   }
 
   depth(value) {
